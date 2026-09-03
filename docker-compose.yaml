@@ -1,5 +1,15 @@
 services:
   
+  consumer:
+    container_name: consumer
+    build:
+      context: .
+      dockerfile: Dockerfiles/consumer.dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - timescalebd
+
   timescaledb:
     image: timescale/timescaledb:latest-pg18
     container_name: timescaledb
