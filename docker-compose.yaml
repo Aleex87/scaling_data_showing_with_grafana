@@ -4,11 +4,11 @@ services:
     container_name: consumer
     build:
       context: .
-      dockerfile: Dockerfiles/consumer.dockerfile
+      dockerfile: dockerfiles/consumer.dockerfile
     env_file:
       - .env
     depends_on:
-      - timescalebd
+      - timescaledb
 
   timescaledb:
     image: timescale/timescaledb:latest-pg18
@@ -21,6 +21,20 @@ services:
       - "5432:5432"
     volumes:
       - timescale_data:/var/lib/postgresql
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - timescaledb
 
 volumes:
   timescale_data:
+  grafana_data:
